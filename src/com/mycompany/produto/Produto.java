@@ -9,9 +9,9 @@ package com.mycompany.produto;
  * @author 10156
  */
 public class Produto {
-    int id;
-    String descricao;
-    Double preco;
+    private int id;
+    private String descricao;
+    private Double preco;
 
     public Produto() {
     }

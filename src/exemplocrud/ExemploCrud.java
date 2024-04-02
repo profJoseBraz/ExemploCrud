@@ -39,11 +39,20 @@ public class ExemploCrud {
             if(opcaoMenu == 1){
                 cadastrar(listaProdutos);
             }else if(opcaoMenu == 2){
-                alterar(listaProdutos);
+                if(listaProdutos.size() > 0)
+                    alterar(listaProdutos);
+                else
+                    System.out.println("Não existem produtos cadastrados!");
             }else if(opcaoMenu == 3){
-                deletar(listaProdutos);
+                if(listaProdutos.size() > 0)
+                    deletar(listaProdutos);
+                else
+                    System.out.println("Não existem produtos cadastrados!");
             }else if(opcaoMenu == 4){
-                listar(listaProdutos);
+                if(listaProdutos.size() > 0)
+                    listar(listaProdutos);
+                else
+                    System.out.println("Não existem produtos cadastrados!");
             }else{
                 continuar = false;
             }
@@ -107,11 +116,18 @@ public class ExemploCrud {
 
             int index = listaProdutos.indexOf(prod.get());
             
+            descricao = prod.get().getDescricao();
+            preco = prod.get().getPreco();
+            
             System.out.println("Nova descrição: ");
-            descricao = scanner.nextLine();
-
+            String descAux = scanner.nextLine();
+            if(descAux.trim().length() > 0)
+                descricao = descAux;
+            
             System.out.println("Novo valor: ");
-            preco = Double.parseDouble(scanner.nextLine());
+            String precoAux = scanner.nextLine();
+            if(precoAux.trim().length() > 0)
+                preco = Double.parseDouble(precoAux);
 
             listaProdutos.set(index, new Produto(idSelecionado, descricao, preco));
 
@@ -119,7 +135,7 @@ public class ExemploCrud {
             System.out.println("================================");
         }catch(NumberFormatException e){
             System.err.println("O preço deve ser um valor numérico!");
-        }catch(IndexOutOfBoundsException e){
+        }catch(NoSuchElementException e){
             System.err.println("Produto não encontrado!");
         }catch(Exception e){
             System.err.println("Não foi possível alterar o produto!");
@@ -133,12 +149,6 @@ public class ExemploCrud {
             System.out.println("================================");
             System.out.println("REMOÇÃO");
             System.out.println("================================");
-
-            if(listaProdutos.size() <= 0){
-                System.out.println("Não existem produtos cadastrados.");
-                System.out.println("================================");
-                return;
-            }
 
             System.out.println("Qual produto deseja REMOVER? (selecione pelo id)");
             for(Object p : listaProdutos){
@@ -172,12 +182,6 @@ public class ExemploCrud {
         System.out.println("================================");
         System.out.println("LISTAGEM");
         System.out.println("================================");
-
-        if(listaProdutos.size() <= 0){
-            System.out.println("Não existem produtos cadastrados.");
-            System.out.println("================================");
-            return;
-        }
 
         for(Object p : listaProdutos){
             System.out.println(p.toString());
