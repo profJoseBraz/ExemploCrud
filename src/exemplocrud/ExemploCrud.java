@@ -6,7 +6,9 @@ package exemplocrud;
 
 import com.mycompany.produto.Produto;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Optional;
 
 /**
  *
@@ -18,7 +20,7 @@ public class ExemploCrud {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ArrayList listaProdutos = new ArrayList<>();
+        ArrayList<Produto> listaProdutos = new ArrayList<>();
         
         Scanner scanner = new Scanner(System.in);
         
@@ -49,7 +51,7 @@ public class ExemploCrud {
         scanner.close();
     }
     
-    public static void cadastrar(ArrayList listaProdutos){
+    public static void cadastrar(ArrayList<Produto> listaProdutos){
         Scanner scanner = new Scanner(System.in);
         
         try{
@@ -68,7 +70,7 @@ public class ExemploCrud {
 
             try{
                 //Pega o id do último item da lista e adiciona + 1
-                id = ((Produto) listaProdutos.get(listaProdutos.size() - 1)).getId() + 1;
+                id = listaProdutos.get(listaProdutos.size() - 1).getId() + 1;
             }catch(IndexOutOfBoundsException e){
                 id = 0;
             }
@@ -81,7 +83,7 @@ public class ExemploCrud {
         }
     }
     
-    public static void alterar(ArrayList listaProdutos){
+    public static void alterar(ArrayList<Produto> listaProdutos){
         Scanner scanner = new Scanner(System.in);
         
         try{
@@ -99,17 +101,19 @@ public class ExemploCrud {
 
             int idSelecionado = scanner.nextInt();
             scanner.nextLine();
+    
+            Optional<Produto> prod = listaProdutos.stream().filter(p -> p.getId() == idSelecionado).findFirst();
+            System.out.println("Produto selecionado para alteração: " + prod.get().toString());
 
-            System.out.println("Produto selecionado para alteração: " + listaProdutos.get(idSelecionado));
-
+            int index = listaProdutos.indexOf(prod.get());
+            
             System.out.println("Nova descrição: ");
             descricao = scanner.nextLine();
 
             System.out.println("Novo valor: ");
-
             preco = Double.parseDouble(scanner.nextLine());
 
-            listaProdutos.set(idSelecionado, new Produto(idSelecionado, descricao, preco));
+            listaProdutos.set(index, new Produto(idSelecionado, descricao, preco));
 
             System.out.println("Produto alterado com sucesso!");
             System.out.println("================================");
@@ -122,7 +126,7 @@ public class ExemploCrud {
         }
     }
     
-    public static void deletar(ArrayList listaProdutos){
+    public static void deletar(ArrayList<Produto> listaProdutos){
         Scanner scanner = new Scanner(System.in);
         
         try{
@@ -144,23 +148,25 @@ public class ExemploCrud {
             int idSelecionado = scanner.nextInt();
             scanner.nextLine();
 
-            System.out.println("Deseja realmente remover o produto: " + listaProdutos.get(idSelecionado) + "? (S/N)");
+            Optional<Produto> prod = listaProdutos.stream().filter(p -> p.getId() == idSelecionado).findFirst();
+            
+            System.out.println("Deseja realmente remover o produto: " + prod.get().toString() + "? (S/N)");
             String opcao = scanner.nextLine();
 
             if(opcao.toLowerCase().equals("s")){
-                listaProdutos.remove(idSelecionado);
+                listaProdutos.remove(prod.get());
                 System.err.println("Produto removido com sucesso!");
             }else
                 System.out.println("Remoção cancelada.");
             System.out.println("================================");
-        }catch(IndexOutOfBoundsException e){
+        }catch(NoSuchElementException e){
             System.err.println("Produto não encontrado!");
         }catch(Exception e){
-            System.err.println("Não foi possível remover o produto!");
+            System.err.println("Não foi possível remover o produto!" + e);
         }
     }
     
-    public static void listar(ArrayList listaProdutos){
+    public static void listar(ArrayList<Produto> listaProdutos){
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("================================");
